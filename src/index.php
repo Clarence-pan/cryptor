@@ -52,6 +52,13 @@ function main($argv)
     }
 
     $passwd = prompt_silent('Please enter your password: ');
+    if ($isEncode){
+        $passwdConfirm = prompt_silent('Please confirm your password: ');
+        if ($passwd != $passwdConfirm){
+            fprintf(STDERR, "Error: failed to confirm your password!");
+            return 3;
+        }
+    }
 
     $inputFileHandle = fopen($inputFile, 'rb');
     if (!$inputFileHandle) {
@@ -78,8 +85,6 @@ function main($argv)
         'rand' => MCRYPT_DEV_URANDOM,
         'magic' => 'CRY',
     ];
-
-    echo "Input len: " . strlen($inputFileContent) . PHP_EOL;
 
     try {
         if ($isEncode) {
@@ -178,6 +183,7 @@ function do_decode($data, $passwd, $config)
 function prompt_silent($prompt = "Enter Password:")
 {
     if ('\\' === DIRECTORY_SEPARATOR) {
+        fprintf(STDERR, $prompt);
         $exe = __DIR__ . '/resources/hiddeninput.exe';
 
         // handle code running from a phar
@@ -193,6 +199,7 @@ function prompt_silent($prompt = "Enter Password:")
             unlink($tmpExe);
         }
 
+        fprintf(STDERR, "\n");
         return $value;
     } else {
         $command = "/usr/bin/env bash -c 'echo OK'";
