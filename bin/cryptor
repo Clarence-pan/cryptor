@@ -1,0 +1,9 @@
+#!/usr/bin/env php
+<?php
+
+if (file_exists(__DIR__.'/cryptor.phar')){
+    require __DIR__.'/cryptor.phar';
+} else {
+    require __DIR__.'/../src/index.php';
+}
+
